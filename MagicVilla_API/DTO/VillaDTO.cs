@@ -8,5 +8,7 @@ namespace MagicVilla_API.DTO
         [Required]
         [MaxLength(10)]
         public string Name { get; set; }
+        public int Sqft { get; set; }
+        public int Occupancy { get; set; }
     }
 }
