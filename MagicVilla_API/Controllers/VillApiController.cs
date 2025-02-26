@@ -20,7 +20,7 @@ namespace MagicVilla_API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<VillaDTO>))]
         public IActionResult GetVillas()
         {
-            _logger.LogInformation("great");
+            _logger.LogInformation("get all villas");
 
             return Ok(VillaStore.VillaList);
         }
