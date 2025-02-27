@@ -1,6 +1,8 @@
 
 
-using MagicVilla_API.Logging;
+
+using MagicVilla_API.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +12,12 @@ builder.Services.AddControllers(options =>
 {
     //options.ReturnHttpNotAcceptable = true;
 }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
-
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
+});
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<Ilogging, Logging>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
