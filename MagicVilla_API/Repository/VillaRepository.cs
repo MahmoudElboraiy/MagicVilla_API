@@ -6,53 +6,21 @@ using System.Linq.Expressions;
 
 namespace MagicVilla_API.Repository
 {
-    public class VillaRepository : IVillaRepository
+    public class VillaRepository : Repository<Villa>, IVillaRepository
     {
         private readonly ApplicationDbContext _db;
 
-        public VillaRepository(ApplicationDbContext db)
+        public VillaRepository(ApplicationDbContext db):base(db)
         {
             _db = db;
         }
-        public async Task Create(Villa villa)
-        {
-           await _db.Villas.AddAsync(villa);
-           await Save();
-        }
 
-        public async Task<Villa> Get(Expression<Func<Villa, bool>> filter = null, bool tracked = true)
+        public async Task<Villa> UpdateAsync(Villa entity)
         {
-            IQueryable<Villa> query = _db.Villas;
-            if (!tracked)
-            {
-                query = query.AsNoTracking();
-            }
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-            return await query.FirstOrDefaultAsync();
-        }
-
-        public async Task<List<Villa>> GetAll(Expression<Func<Villa, bool>> filter = null)
-        {
-           IQueryable<Villa> query = _db.Villas;
-           if(filter != null)
-            {
-                query = query.Where(filter);
-            }
-            return await  query.ToListAsync();
-        }
-
-        public async Task Remove(Villa villa)
-        {
-             _db.Villas.Remove(villa);
-            await Save();
-        }
-
-        public async Task Save()
-        {
-           await _db.SaveChangesAsync();
+            entity.CreatedDate = DateTime.Now;
+            _db.Villas.Update(entity);
+            await _db.SaveChangesAsync();
+            return entity;
         }
     }
 }
