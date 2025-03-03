@@ -13,13 +13,16 @@ namespace MagicVilla_API.Controllers
     public class VillaNumberController : ControllerBase
     {
         private readonly IVillaNumberRepository _dbVillaNumber;
-        private readonly IMapper _mapper;
-        public APIResponse _response;
 
-        public VillaNumberController(IVillaNumberRepository dbVillaNumber,IMapper mapper)
+        private readonly IMapper _mapper;
+        private readonly IVillaRepository _dbVilla;
+        protected APIResponse _response;
+
+        public VillaNumberController(IVillaNumberRepository dbVillaNumber,IMapper mapper,IVillaRepository dbVilla)
         {
             _dbVillaNumber = dbVillaNumber;
             _mapper = mapper;
+            _dbVilla = dbVilla;
             _response = new();
         }
         [HttpGet]
@@ -73,11 +76,16 @@ namespace MagicVilla_API.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                //if (await _dbVillaNumber.GetAsync(v => v.VillaNo == villaNumber.VillaNo) != null)
-                //{
-                //    ModelState.AddModelError("", "the number must be unique");
-                //    return BadRequest(ModelState);
-                //}
+                if (await _dbVillaNumber.GetAsync(v => v.VillaNo == villaNumber.VillaNo) != null)
+                {
+                    ModelState.AddModelError("", "the number must be unique");
+                    return BadRequest(ModelState);
+                }
+                if(await _dbVilla.GetAsync(v => v.Id == villaNumber.VillaId) == null)
+                {
+                    ModelState.AddModelError("", "the villa id is not exits");
+                    return BadRequest(ModelState);
+                }
                 VillaNumber villanumber1 = _mapper.Map<VillaNumber>(villaNumber);
                 villanumber1.CreateDate = DateTime.Now;
                 villanumber1.UpdateDate = DateTime.Now;
@@ -134,12 +142,18 @@ namespace MagicVilla_API.Controllers
                     _response.HttpStatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
+                if (await _dbVilla.GetAsync(v => v.Id == villaUpdateDTO.VillaId) == null)
+                {
+                    ModelState.AddModelError("", "the villa id is not exits");
+                    return BadRequest(ModelState);
+                }
                 VillaNumber villaNumber = await _dbVillaNumber.GetAsync(v => v.VillaNo == villaNo,tracked:false);
                 if (villaNumber == null)
                 {
                     _response.HttpStatusCode = HttpStatusCode.NotFound;
                     return NotFound(_response);
                 }
+               
                 VillaNumber villa =_mapper.Map<VillaNumber>(villaUpdateDTO);
                 await _dbVillaNumber.UpdateAsync(villa);
                 _response.Result = _mapper.Map<VillaNumberDTO>(villa); ;
