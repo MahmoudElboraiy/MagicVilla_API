@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MagicVilla_API.DTO
+namespace Magic_villa_web.DTO
 {
-    public class VillaCreateDTO
+    public class VillaDTO
     {
+        public int Id { get; set; }
         [Required]
         [MaxLength(10)]
         public string Name { get; set; }
