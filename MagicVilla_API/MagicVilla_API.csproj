@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -11,6 +11,10 @@
     <Content Remove="DTO\**" />
     <EmbeddedResource Remove="DTO\**" />
     <None Remove="DTO\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Models\VillaNumber.cs" />
   </ItemGroup>
 
   <ItemGroup>

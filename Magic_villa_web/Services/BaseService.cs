@@ -52,7 +52,10 @@ namespace Magic_villa_web.Services
                 //{
                 //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
                 //}
-
+                /*
+                 if there is wrong here the api response will tell you the type
+                you can derefet to custom login here when the response is invalid
+                 */
                 apiResponse = await client.SendAsync(message);
 
                 var apiContent = await apiResponse.Content.ReadAsStringAsync();

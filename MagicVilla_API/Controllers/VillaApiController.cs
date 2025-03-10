@@ -97,7 +97,7 @@ namespace MagicVilla_API.Controllers
                     ModelState.AddModelError("", "the name must be unique");
                     return BadRequest(ModelState);
                 }
-                Villa villa = _mapper.Map<Villa>(villaCreate);
+                Models.Villa villa = _mapper.Map<Villa>(villaCreate);
                 //Villa villa = new Villa
                 //{
                 //    Name = villaCreate.Name,
@@ -163,7 +163,7 @@ namespace MagicVilla_API.Controllers
                 {
                     return BadRequest();
                 }
-                Villa villa = _mapper.Map<Villa>(UpdateVilla);
+                Models.Villa villa = _mapper.Map<Villa>(UpdateVilla);
                 //Villa villa = new Villa
                 //{
                 //    Id= UpdateVilla.Id,
@@ -198,7 +198,7 @@ namespace MagicVilla_API.Controllers
             {
                 return BadRequest();
             }
-            Villa villa = await _dbVilla.GetAsync(v => v.Id == id, tracked: false);
+            Models.Villa villa = await _dbVilla.GetAsync(v => v.Id == id, tracked: false);
             if (villa == null)
             {
                 return NotFound();
@@ -206,7 +206,7 @@ namespace MagicVilla_API.Controllers
             VillaUpdateDTO villaDTO = _mapper.Map<VillaUpdateDTO>(villa);
 
             patchDTO.ApplyTo(villaDTO, ModelState);
-            Villa villa2 = _mapper.Map<Villa>(villaDTO);
+            Models.Villa villa2 = _mapper.Map<Villa>(villaDTO);
             await _dbVilla.UpdateAsync(villa2);
             if (!ModelState.IsValid)
             {
