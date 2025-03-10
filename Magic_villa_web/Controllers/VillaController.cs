@@ -11,10 +11,10 @@ namespace Magic_villa_web.Controllers
 {
     public class VillaController : Controller
     {
-        private readonly IVillaService _villaService;
+        private readonly IVillaNumberService _villaService;
         private readonly IMapper _mapper;
 
-        public VillaController(IVillaService villaService,IMapper mapper)
+        public VillaController(IVillaNumberService villaService,IMapper mapper)
         {
             _villaService = villaService;
             _mapper = mapper;
