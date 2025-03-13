@@ -26,6 +26,7 @@ namespace Magic_villa_web.Controllers
             {
                 list = JsonConvert.DeserializeObject<List<VillaNumberDTO>>(Convert.ToString(response.Result));
             }
+
             return View(list);
         }
     }
