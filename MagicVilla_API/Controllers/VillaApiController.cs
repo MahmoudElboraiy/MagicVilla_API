@@ -4,6 +4,7 @@ using MagicVilla_API.DTO;
 using MagicVilla_API.Models;
 using MagicVilla_API.Models.DTO;
 using MagicVilla_API.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,7 @@ namespace MagicVilla_API.Controllers
             _response = new();
         }
         [HttpGet]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<VillaDTO>))]
         public async Task<ActionResult<APIResponse>> GetVillas()
         {
@@ -44,6 +46,7 @@ namespace MagicVilla_API.Controllers
             }
             return _response;
         }
+        [Authorize(Roles ="admin")]
         [HttpGet("{id:int}", Name = "GetVilla")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -88,16 +91,19 @@ namespace MagicVilla_API.Controllers
                 {
                     return BadRequest(villaCreate);
                 }
+
                 //if (villaDTO.Id > 0)
                 //{
                 //    return StatusCode(StatusCodes.Status500InternalServerError);
                 //}
+
                 if (await _dbVilla.GetAsync(v => v.Name.ToLower() == villaCreate.Name) != null)
                 {
                     ModelState.AddModelError("", "the name must be unique");
                     return BadRequest(ModelState);
                 }
-                Models.Villa villa = _mapper.Map<Villa>(villaCreate);
+                Villa villa = _mapper.Map<Villa>(villaCreate);
+
                 //Villa villa = new Villa
                 //{
                 //    Name = villaCreate.Name,
@@ -121,6 +127,7 @@ namespace MagicVilla_API.Controllers
             }
             return _response;
         }
+        [Authorize(Roles ="CUSTOM")]
         [HttpDelete("{id}", Name = "DeleteVilla")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
