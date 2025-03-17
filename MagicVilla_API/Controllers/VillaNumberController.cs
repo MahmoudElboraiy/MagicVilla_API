@@ -9,8 +9,10 @@ using System.Net;
 
 namespace MagicVilla_API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/VillaNumberAPI")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     public class VillaNumberController : ControllerBase
     {
         private readonly IVillaNumberRepository _dbVillaNumber;
@@ -18,7 +20,6 @@ namespace MagicVilla_API.Controllers
         private readonly IMapper _mapper;
         private readonly IVillaRepository _dbVilla;
         protected APIResponse _response;
-
         public VillaNumberController(IVillaNumberRepository dbVillaNumber,IMapper mapper,IVillaRepository dbVilla)
         {
             _dbVillaNumber = dbVillaNumber;
@@ -26,6 +27,7 @@ namespace MagicVilla_API.Controllers
             _dbVilla = dbVilla;
             _response = new();
         }
+        [MapToApiVersion("1.0")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<APIResponse>> GetAllVillasNumber()
@@ -43,6 +45,14 @@ namespace MagicVilla_API.Controllers
             }
             return _response;
         }
+
+        [MapToApiVersion("2.0")]
+        [HttpGet]
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
+
         [HttpGet("{villaNo:int}", Name ="GetVillaNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
