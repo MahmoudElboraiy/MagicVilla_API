@@ -2,6 +2,7 @@
 using MagicVilla_API.DTO;
 using MagicVilla_API.Models;
 using MagicVilla_API.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -65,6 +66,8 @@ namespace MagicVilla_API.Controllers
             }
             return _response;
         }
+
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -101,6 +104,7 @@ namespace MagicVilla_API.Controllers
             }
             return _response;
         }
+        [Authorize(Roles = "admin")]
         [HttpDelete("{villaNo:int}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -133,6 +137,7 @@ namespace MagicVilla_API.Controllers
             return _response;
         }
         [HttpPut("{villaNo:int}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<APIResponse>> UpdateVillaNumber(int villaNo ,[FromBody]VillaNumberUpdateDTO villaUpdateDTO) 
         {
             try

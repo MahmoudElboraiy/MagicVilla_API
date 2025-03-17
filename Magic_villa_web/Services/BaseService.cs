@@ -48,10 +48,10 @@ namespace Magic_villa_web.Services
 
                 HttpResponseMessage apiResponse = null;
 
-                //if (!string.IsNullOrEmpty(apiRequest.Token))
-                //{
-                //    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
-                //}
+                if (!string.IsNullOrEmpty(apiRequest.Token))
+                {
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiRequest.Token);
+                }
                 /*
                  if there is wrong here the api response will tell you the type
                 you can derefet to custom login here when the response is invalid

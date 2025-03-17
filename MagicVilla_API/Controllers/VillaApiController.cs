@@ -28,7 +28,6 @@ namespace MagicVilla_API.Controllers
             _response = new();
         }
         [HttpGet]
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<VillaDTO>))]
@@ -48,7 +47,6 @@ namespace MagicVilla_API.Controllers
             }
             return _response;
         }
-        [Authorize(Roles ="admin")]
         [HttpGet("{id:int}", Name = "GetVilla")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -131,7 +129,7 @@ namespace MagicVilla_API.Controllers
             }
             return _response;
         }
-        [Authorize(Roles ="CUSTOM")]
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}", Name = "DeleteVilla")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -165,6 +163,7 @@ namespace MagicVilla_API.Controllers
             }
             return _response;
         }
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}", Name = "UpdateVilla")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
