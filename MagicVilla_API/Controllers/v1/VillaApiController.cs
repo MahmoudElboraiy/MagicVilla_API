@@ -29,7 +29,7 @@ namespace MagicVilla_API.Controllers.v1
             _response = new();
         }
         [HttpGet]
-        [ResponseCache(Duration =30)]
+        [ResponseCache(CacheProfileName = "Default30")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<VillaDTO>))]

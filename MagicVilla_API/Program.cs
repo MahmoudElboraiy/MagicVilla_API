@@ -17,8 +17,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(options =>
-{
+builder.Services.AddControllers(option => {
+option.CacheProfiles.Add("Default30",
+   new CacheProfile()
+   {
+       Duration = 30
+   });
     //options.ReturnHttpNotAcceptable = true;
 }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
