@@ -11,10 +11,11 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Net;
 
-namespace MagicVilla_API.Controllers
+namespace MagicVilla_API.Controllers.v1
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/VillaAPI")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class VillaApiController : ControllerBase
     {
         protected APIResponse _response;
@@ -175,7 +176,7 @@ namespace MagicVilla_API.Controllers
                 {
                     return BadRequest();
                 }
-                Models.Villa villa = _mapper.Map<Villa>(UpdateVilla);
+                Villa villa = _mapper.Map<Villa>(UpdateVilla);
                 //Villa villa = new Villa
                 //{
                 //    Id= UpdateVilla.Id,
@@ -210,7 +211,7 @@ namespace MagicVilla_API.Controllers
             {
                 return BadRequest();
             }
-            Models.Villa villa = await _dbVilla.GetAsync(v => v.Id == id, tracked: false);
+            Villa villa = await _dbVilla.GetAsync(v => v.Id == id, tracked: false);
             if (villa == null)
             {
                 return NotFound();
@@ -218,7 +219,7 @@ namespace MagicVilla_API.Controllers
             VillaUpdateDTO villaDTO = _mapper.Map<VillaUpdateDTO>(villa);
 
             patchDTO.ApplyTo(villaDTO, ModelState);
-            Models.Villa villa2 = _mapper.Map<Villa>(villaDTO);
+            Villa villa2 = _mapper.Map<Villa>(villaDTO);
             await _dbVilla.UpdateAsync(villa2);
             if (!ModelState.IsValid)
             {
