@@ -81,12 +81,14 @@ namespace MagicVilla_API.Controllers.v1
             {
                 if (id == 0)
                 {
-                    return BadRequest();
+                    _response.IsSucessed = false;
+                    return BadRequest(_response);
                 }
                 var villa = await _dbVilla.GetAsync(v => v.Id == id);
                 if (villa == null)
                 {
-                    return NotFound();
+                    _response.IsSucessed = false;
+                    return NotFound(_response);
                 }
                 _response.Result = _mapper.Map<VillaDTO>(villa);
                 _response.HttpStatusCode = HttpStatusCode.OK;
@@ -109,10 +111,12 @@ namespace MagicVilla_API.Controllers.v1
             {
                 if (!ModelState.IsValid)
                 {
+                    _response.IsSucessed = false;
                     return BadRequest(ModelState);
                 }
                 if (villaCreate == null)
                 {
+                    _response.IsSucessed = false;
                     return BadRequest(villaCreate);
                 }
 
@@ -123,6 +127,7 @@ namespace MagicVilla_API.Controllers.v1
 
                 if (await _dbVilla.GetAsync(v => v.Name.ToLower() == villaCreate.Name) != null)
                 {
+                    _response.IsSucessed = false;
                     ModelState.AddModelError("", "the name must be unique");
                     return BadRequest(ModelState);
                 }
@@ -165,12 +170,14 @@ namespace MagicVilla_API.Controllers.v1
                 if (id == 0)
                 {
                     _response.HttpStatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSucessed = false;
                     return BadRequest(_response);
                 }
                 var villa = await _dbVilla.GetAsync(v => v.Id == id);
                 if (villa == null)
                 {
                     _response.HttpStatusCode = HttpStatusCode.NotFound;
+                    _response.IsSucessed = false;
                     return NotFound(_response);
                 }
                 await _dbVilla.RemoveAsync(villa);
@@ -195,7 +202,8 @@ namespace MagicVilla_API.Controllers.v1
             {
                 if (id == 0 || id != UpdateVilla.Id)
                 {
-                    return BadRequest();
+                    _response.IsSucessed = false;
+                    return BadRequest(_response);
                 }
                 Villa villa = _mapper.Map<Villa>(UpdateVilla);
                 //Villa villa = new Villa
@@ -230,12 +238,14 @@ namespace MagicVilla_API.Controllers.v1
         {
             if (id == 0)
             {
-                return BadRequest();
+                _response.IsSucessed = false;
+                return BadRequest(_response);
             }
             Villa villa = await _dbVilla.GetAsync(v => v.Id == id, tracked: false);
             if (villa == null)
             {
-                return NotFound();
+                _response.IsSucessed = false;
+                return NotFound(_response);
             }
             VillaUpdateDTO villaDTO = _mapper.Map<VillaUpdateDTO>(villa);
 
@@ -244,6 +254,7 @@ namespace MagicVilla_API.Controllers.v1
             await _dbVilla.UpdateAsync(villa2);
             if (!ModelState.IsValid)
             {
+                _response.IsSucessed = false;
                 return BadRequest(ModelState);
             }
 

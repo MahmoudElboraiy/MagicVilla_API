@@ -62,6 +62,7 @@ namespace MagicVilla_API.Controllers.v1
                 if(villaNumber == null)
                 {
                     _response.HttpStatusCode = HttpStatusCode.NotFound;
+                    _response.IsSucessed = false;
                     return NotFound(_response);
                 }
                 _response.Result = _mapper.Map<VillaNumberDTO>(villaNumber);
@@ -85,15 +86,18 @@ namespace MagicVilla_API.Controllers.v1
             {
                 if (!ModelState.IsValid)
                 {
+                    _response.IsSucessed = false;
                     return BadRequest(ModelState);
                 }
                 if (await _dbVillaNumber.GetAsync(v => v.VillaNo == villaNumber.VillaNo) != null)
                 {
+                    _response.IsSucessed = false;
                     ModelState.AddModelError("", "the number must be unique");
                     return BadRequest(ModelState);
                 }
                 if(await _dbVilla.GetAsync(v => v.Id == villaNumber.VillaId) == null)
                 {
+                    _response.IsSucessed = false;
                     ModelState.AddModelError("", "the villa id is not exits");
                     return BadRequest(ModelState);
                 }
@@ -123,14 +127,16 @@ namespace MagicVilla_API.Controllers.v1
             { 
             if (villaNo < 0)
             {
-                 _response.HttpStatusCode = HttpStatusCode.BadRequest;
+                    _response.IsSucessed = false;
+                    _response.HttpStatusCode = HttpStatusCode.BadRequest;
                 return BadRequest(_response);
             }
             VillaNumber villaNumber = await _dbVillaNumber.GetAsync(v => v.VillaNo == villaNo);
             if(villaNumber == null)
             {
                  _response.HttpStatusCode = HttpStatusCode.NotFound;
-                 return NotFound(_response);
+                    _response.IsSucessed = false;
+                    return NotFound(_response);
             }
             await _dbVillaNumber.RemoveAsync(villaNumber);
             _response.Result = _mapper.Map<VillaNumberDTO>(villaNumber);
@@ -164,6 +170,7 @@ namespace MagicVilla_API.Controllers.v1
                 if (villaNumber == null)
                 {
                     _response.HttpStatusCode = HttpStatusCode.NotFound;
+                    _response.IsSucessed = false;
                     return NotFound(_response);
                 }
                
