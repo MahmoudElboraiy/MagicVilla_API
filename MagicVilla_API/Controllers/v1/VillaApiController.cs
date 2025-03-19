@@ -29,6 +29,7 @@ namespace MagicVilla_API.Controllers.v1
             _response = new();
         }
         [HttpGet]
+        [ResponseCache(Duration =30)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<VillaDTO>))]
@@ -49,6 +50,7 @@ namespace MagicVilla_API.Controllers.v1
             return _response;
         }
         [HttpGet("{id:int}", Name = "GetVilla")]
+        [ResponseCache(Location =ResponseCacheLocation.None,NoStore =true)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
