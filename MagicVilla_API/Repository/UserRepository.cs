@@ -16,13 +16,15 @@ namespace MagicVilla_API.Repository
         private readonly ApplicationDbContext _db;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private string secretKey;
         public UserRepository(ApplicationDbContext db, IConfiguration configuration,
-            UserManager<ApplicationUser> userManager,IMapper mapper)
+            UserManager<ApplicationUser> userManager,IMapper mapper,RoleManager<IdentityRole> roleManger)
         {
             _db = db;
             _userManager = userManager;
             _mapper = mapper;
+            _roleManager = roleManger;
             secretKey = configuration.GetValue<string>("ApiSettings:Secret");
         }
         public bool IsUnique(string username)
@@ -56,7 +58,7 @@ namespace MagicVilla_API.Repository
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                     new Claim(ClaimTypes.Name, user.Id.ToString()),
+                     new Claim(ClaimTypes.Name, user.UserName.ToString()),
                      new Claim(ClaimTypes.Role,roles.FirstOrDefault())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
@@ -68,7 +70,6 @@ namespace MagicVilla_API.Repository
             {
                 Token = tokenHandler.WriteToken(token),
                 User = _mapper.Map<UserDTO>(user),
-                Role = roles.FirstOrDefault(),
             };
             return loginResponseDTO;
         }
@@ -87,10 +88,24 @@ namespace MagicVilla_API.Repository
                 var result = await _userManager.CreateAsync(user, registerationRequestDTO.Password);
                 if (result.Succeeded)
                 {
+                    if (!_roleManager.RoleExistsAsync("admin").GetAwaiter().GetResult())
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole("admin"));
+                        await _roleManager.CreateAsync(new IdentityRole("customer"));
+                    }
                     await _userManager.AddToRoleAsync(user, "admin"); 
                     var userToReturn = _db.ApplicationUsers
                          .FirstOrDefault(u => u.UserName == registerationRequestDTO.UserName);
                     return _mapper.Map<UserDTO>(userToReturn);
+                }
+                else
+                {
+                    // return here the error 
+                    var errors = result.Errors.Select(e => e.Description).ToList();
+
+                    // Option 1: Throw an exception (if your service layer handles exceptions)
+                    throw new Exception($"User registration failed: {string.Join(", ", errors)}");
+
                 }
             }
             catch(Exception ex)
