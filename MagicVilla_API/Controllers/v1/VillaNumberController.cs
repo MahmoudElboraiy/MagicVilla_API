@@ -150,40 +150,35 @@ namespace MagicVilla_API.Controllers.v1
             }
             return _response;
         }
-        [HttpPut("{villaNo:int}")]
         [Authorize(Roles = "admin")]
-        public async Task<ActionResult<APIResponse>> UpdateVillaNumber(int villaNo ,[FromBody]VillaNumberUpdateDTO villaUpdateDTO) 
+        [HttpPut("{id:int}", Name = "UpdateVillaNumber")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<APIResponse>> UpdateVillaNumber(int id ,[FromBody]VillaNumberUpdateDTO updateDTO) 
         {
             try
             {
-                if (villaNo < 0)
+                if (updateDTO == null || id != updateDTO.VillaNo)
                 {
-                    _response.HttpStatusCode = HttpStatusCode.BadRequest;
-                    return BadRequest(_response);
+                    return BadRequest();
                 }
-                if (await _dbVilla.GetAsync(v => v.Id == villaUpdateDTO.VillaId) == null)
+                if (await _dbVilla.GetAsync(u => u.Id == updateDTO.VillaId) == null)
                 {
-                    ModelState.AddModelError("", "the villa id is not exits");
+                    ModelState.AddModelError("ErrorMessages", "Villa ID is Invalid!");
                     return BadRequest(ModelState);
                 }
-                VillaNumber villaNumber = await _dbVillaNumber.GetAsync(v => v.VillaNo == villaNo,tracked:false);
-                if (villaNumber == null)
-                {
-                    _response.HttpStatusCode = HttpStatusCode.NotFound;
-                    _response.IsSucessed = false;
-                    return NotFound(_response);
-                }
-               
-                VillaNumber villa =_mapper.Map<VillaNumber>(villaUpdateDTO);
-                await _dbVillaNumber.UpdateAsync(villa);
-                _response.Result = _mapper.Map<VillaNumberDTO>(villa); ;
+                VillaNumber model = _mapper.Map<VillaNumber>(updateDTO);
+
+                await _dbVillaNumber.UpdateAsync(model);
                 _response.HttpStatusCode = HttpStatusCode.NoContent;
+                _response.IsSucessed = true;
                 return Ok(_response);
             }
             catch (Exception ex)
             {
-                _response.ErrorMessages = new List<string>() { ex.ToString() };
                 _response.IsSucessed = false;
+                _response.ErrorMessages
+                     = new List<string>() { ex.ToString() };
             }
             return _response;
         }

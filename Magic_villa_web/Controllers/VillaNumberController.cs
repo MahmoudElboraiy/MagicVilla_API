@@ -87,6 +87,7 @@ namespace MagicVilla_Web.Controllers
             return View(model);
         }
         [Authorize(Roles = "admin")]
+        [HttpGet]
         public async Task<IActionResult> UpdateVillaNumber(int villaNo)
         {
             VillaNumberUpdateVM villaNumberVM = new();
