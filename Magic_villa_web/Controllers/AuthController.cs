@@ -70,11 +70,21 @@ namespace Magic_villa_web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterationRequestDTO obj)
         {
+            if (string.IsNullOrEmpty(obj.Role))
+            {
+                obj.Role = SD.Customer;
+            }
             APIResponse result = await _authService.RegisterAsync<APIResponse>(obj);
             if (result != null && result.IsSucessed)
             {
                 return RedirectToAction("Login");
             }
+            var roleList = new List<SelectListItem>()
+             {
+                 new SelectListItem{Text=SD.Admin,Value=SD.Admin},
+                 new SelectListItem{Text=SD.Customer,Value=SD.Customer},
+             };
+            ViewBag.RoleList = roleList;
             return View();
         }
 
