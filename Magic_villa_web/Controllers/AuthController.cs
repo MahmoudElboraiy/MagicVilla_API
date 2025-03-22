@@ -5,6 +5,7 @@ using MagicVilla_utility;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -55,6 +56,12 @@ namespace Magic_villa_web.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            var roleList = new List<SelectListItem>()
+             {
+                   new SelectListItem{Text=SD.Admin,Value=SD.Admin},
+                 new SelectListItem{Text=SD.Customer,Value=SD.Customer},
+             };
+            ViewBag.RoleList = roleList;
             return View();
         }
 
